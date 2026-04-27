@@ -23,3 +23,14 @@ for reservation in response['Reservations']:
 # [응용문제]
 # 1. 상태가 'running'인 인스턴스만 출력해보세요.
 # 2. 인스턴스의 Public IP도 함께 출력해보세요.
+
+import boto3
+
+ec2 = boto3.client('ec2', region_name='ap-northeast-2')  # region은 상황에 맞게 변경
+response = ec2.describe_instances()
+
+for reservation in response['Reservations']:
+	for instance in reservation['Instances']:
+		if instance['State']['Name'] == 'running':
+			public_ip = instance.get('PublicIpAddress', 'N/A')  # Public IP가 없는 경우 'N/A'로 표시
+			print(f"ID: {instance['InstanceId']}, 상태: {instance['State']['Name']}, Public IP: {public_ip}")
